@@ -1,6 +1,6 @@
 using System;
 
-using AoC2019.Day1;
+using AoC2019.Day18;
 
 namespace AoC2019
 {
@@ -10,16 +10,16 @@ namespace AoC2019
 
         public void Run()
         {
-            bool saveCursorVisibile = Console.CursorVisible;
+            //bool saveCursorVisibile = Console.CursorVisible;
             Console.WriteLine("Part1...");
             Part1();
-            Console.SetCursorPosition(0, 2);
+            //Console.SetCursorPosition(0, 2);
             Console.WriteLine("Part2...");
             Part2();
-            Console.SetCursorPosition(0, 4);
+            //Console.SetCursorPosition(0, 4);
             Console.WriteLine("Press enter to quit.");
             Console.ReadLine();
-            Console.CursorVisible = saveCursorVisibile;
+            //Console.CursorVisible = saveCursorVisibile;
         }
 
         protected abstract void Part1();

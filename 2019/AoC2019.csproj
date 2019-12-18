@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0A4F3A86-259A-4AFD-BD88-1F9E070F36A3}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>AoC19</RootNamespace>
-    <AssemblyName>AoC19</AssemblyName>
+    <RootNamespace>AoC2019</RootNamespace>
+    <AssemblyName>AoC2019</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -47,6 +47,9 @@
     <Compile Include="Day15\RepairDroid.cs" />
     <Compile Include="Day17\Input.cs" />
     <Compile Include="Day17\Main.cs" />
+    <Compile Include="Day17\VacuumDroid.cs" />
+    <Compile Include="Day18\Input.cs" />
+    <Compile Include="Day18\Main.cs" />
     <Compile Include="Intcode\Computer.cs" />
     <Compile Include="Intcode\Commands.cs" />
     <Compile Include="Day01\Input.cs" />
