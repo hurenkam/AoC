@@ -50,6 +50,9 @@
     <Compile Include="Day17\VacuumDroid.cs" />
     <Compile Include="Day18\Input.cs" />
     <Compile Include="Day18\Main.cs" />
+    <Compile Include="Day19\Input.cs" />
+    <Compile Include="Day19\Main.cs" />
+    <Compile Include="Day19\Drone.cs" />
     <Compile Include="Intcode\Computer.cs" />
     <Compile Include="Intcode\Commands.cs" />
     <Compile Include="Day01\Input.cs" />
