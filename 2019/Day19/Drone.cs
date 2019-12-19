@@ -25,20 +25,12 @@ namespace AoC2019.Day19
 
     public class Drone
     {
-        private Queue<BigInteger> _inputqueue = new Queue<BigInteger>();
-        private Queue<BigInteger> _outputqueue = new Queue<BigInteger>();
-        private Semaphore _guardinput = new Semaphore(0, 2);
-        private Semaphore _guardoutput = new Semaphore(0, 1);
-        private List<BigInteger> _inputs = new List<BigInteger>() { 1, 4, 2, 3 };
+        private Computer _computer;
 
         public Drone()
         {
-        }
-
-        public void Halt()
-        {
-            _inputqueue.Enqueue(0);
-            _guardinput.Release();
+            _computer = new Computer();
+            _computer.LoadProgram(Input.Data);
         }
 
         public List<Position> ProbeArea(Area area)
@@ -68,39 +60,18 @@ namespace AoC2019.Day19
 
         public int Probe(Position pos)
         {
-            var computer = new Computer();
-            computer.LoadProgram(Input.Data);
-            computer.input = InputProvider;
-            computer.output = OutputHandler;
-            Thread t = new Thread(new ThreadStart(computer.Run));
-            t.Start();
+            //Console.WriteLine("Probe()");
+            int result = -1;
 
-            //Console.WriteLine("Probe({0},{1}): Enqueuing ... ", pos.X, pos.Y);
-            _inputqueue.Enqueue(pos.X);
-            _inputqueue.Enqueue(pos.Y);
-            _guardinput.Release(2);
-            //Console.WriteLine("Probe({0},{1}): Waiting ... ", pos.X, pos.Y);
-            _guardoutput.WaitOne();
-            int result = (int)_outputqueue.Dequeue();
-            //Console.WriteLine("Probe({0},{1}): Return {2}.", pos.X, pos.Y, result);
+            var q = new Queue<BigInteger>();
+            q.Enqueue(pos.X);
+            q.Enqueue(pos.Y);
+            _computer.Reset();
+            _computer.input = () => { return q.Dequeue(); };
+            _computer.output = (value) => { result = (int)value; };
+            _computer.Run();
+
             return result;
-        }
-
-        private BigInteger InputProvider()
-        {
-            //Console.WriteLine("InputProvider(): Waiting ... ");
-            _guardinput.WaitOne();
-            var v = _inputqueue.Dequeue();
-            //Console.WriteLine("InputProvider(): Return {0}.",v);
-            return v;
-        }
-
-        private void OutputHandler(BigInteger value)
-        {
-            //Console.WriteLine("OutputHandler({0}): Enqueing ... ", value);
-            _outputqueue.Enqueue(value);
-            _guardoutput.Release();
-            //Console.WriteLine("OutputHandler({0}): Released.", value);
         }
     }
 }

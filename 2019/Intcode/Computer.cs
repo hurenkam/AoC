@@ -74,10 +74,22 @@ namespace AoC2019.Intcode
             return result;
         }
 
+        private List<BigInteger> _code = new List<BigInteger>();
         public void LoadProgram(List<BigInteger> code)
         {
+            _code = code;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            //Console.WriteLine("Computer.Reset()");
+            ip = 0;
+            rb = 0;
+            ram = new Memory();
+            halt = false;
             BigInteger index = 0;
-            foreach (var item in code)
+            foreach (var item in _code)
                 ram[index++] = item;
         }
 

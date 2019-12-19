@@ -13,7 +13,6 @@ namespace AoC2019.Day19
         {
             var drone = new Drone();
             var map = drone.ProbeArea(new Area() { Left = 0, Top = 0, Right = 49, Bottom = 49 });
-            drone.Halt();
 
             var area = GetArea(map);
 
@@ -49,8 +48,8 @@ namespace AoC2019.Day19
                 while (drone.Probe(new Position { X=x, Y=y+99 }) <1) { x++; };
 
                 // determine if ship fits
-                var area = new Area() { Left = x, Top = y, Right = x + 99, Bottom = y+99 };
-                if (drone.ProbeCorners(area).Count >3) halt = true;
+                var map = drone.ProbeCorners(new Area() { Left = x, Top = y, Right = x + 99, Bottom = y + 99 });
+                halt = (map.Count > 3);
             }
 
             Console.WriteLine("Result:    {0}", x*10000+y);
