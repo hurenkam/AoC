@@ -6,7 +6,7 @@ with open('input','r') as file:
     numbers = [int(line.strip()) for line in file]
 
 
-print(numbers)
+print("Input",numbers)
 
 def Part1():
     for number1 in numbers:
