@@ -5,9 +5,6 @@ print("Day 2")
 with open('input','r') as file:
     entries = [line.strip() for line in file]
 
-print("Part1: ",Part1())
-print("Part2: ",Part2())
-
 
 
 def Part1():
@@ -55,3 +52,9 @@ def IsValidPasswordPart2(first,second,char,password):
         return True
 
     return False
+
+
+
+print("Part1: ",Part1())
+print("Part2: ",Part2())
+
