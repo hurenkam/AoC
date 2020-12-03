@@ -27,13 +27,12 @@ def Part1():
 
 
 def Part2():
-    i1 = CheckSlope(1,1)
-    i2 = CheckSlope(3,1)
-    i3 = CheckSlope(5,1)
-    i4 = CheckSlope(7,1)
-    i5 = CheckSlope(1,2)
-    return i1 * i2 * i3 * i4 * i5
+    slopes = [(1,1),(3,1),(5,1),(7,1),(1,2)]
+    product = 1
+    for dx,dy in slopes:
+        product = product * CheckSlope(dx,dy)
 
+    return product
 
 
 print("Part1: ",Part1())
