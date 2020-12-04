@@ -7,19 +7,20 @@ with open('input','r') as file:
 
 
 
-def CheckSlope(dx,dy):
+def NumberOfTreesOnSlope(slope):
     x = 0
     y = 0
-    treecount = 0
+    dx,dy = slope
+    count = 0
     while y < len(map):
         p = x % len(map[y])
         if (map[y][p]=='#'):
-            treecount += 1
+            count += 1
 
         x+=dx
         y+=dy
 
-    return treecount
+    return count
 
 
 def Part1():
