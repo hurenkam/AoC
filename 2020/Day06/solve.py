@@ -2,14 +2,10 @@
 
 #===================================================================================
 def Part1():
-    groups = [ParseGroupPart1(group.strip()) for group in content.split('\n\n')]
-    count = 0
-    for group in groups:
-        count += len(group)
-    return count
+    groups = [FindAnyYes(group.split('\n')) for group in content.split('\n\n')]
+    return sum( [len(group) for group in groups] )
 
-def ParseGroupPart1(group):
-    members = group.split('\n')
+def FindAnyYes(members):
     result = []
 
     for member in members:
@@ -20,14 +16,10 @@ def ParseGroupPart1(group):
 
 #===================================================================================
 def Part2():
-    groups = [ParseGroupPart2(group.strip()) for group in content.split('\n\n')]
-    count = 0
-    for group in groups:
-        count += len(group)
-    return count
+    groups = [FindAllYes(group.split('\n')) for group in content.split('\n\n')]
+    return sum( [len(group) for group in groups] )
 
-def ParseGroupPart2(group):
-    members = group.split('\n')
+def FindAllYes(members):
     result = list(members.pop(0))
 
     for member in members:
