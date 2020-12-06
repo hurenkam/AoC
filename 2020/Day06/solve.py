@@ -39,9 +39,6 @@ def ParseGroupPart2(group):
 #===================================================================================
 print("Day 6")
 
-def ParseLine(line):
-    return line.strip()
-
 with open('input','r') as file:
     content = file.read()
 
