@@ -2,7 +2,6 @@
 
 #===================================================================================
 def Part1():
-    groups = [ParseGroupPart1(group.strip()) for group in content.split('\n\n')]
     count = 0
     for group in groups:
         count += len(group)
@@ -20,7 +19,6 @@ def ParseGroupPart1(group):
 
 #===================================================================================
 def Part2():
-    groups = [ParseGroupPart2(group.strip()) for group in content.split('\n\n')]
     count = 0
     for group in groups:
         count += len(group)
@@ -41,6 +39,7 @@ print("Day 6")
 
 with open('input','r') as file:
     content = file.read()
+    groups = [ParseGroupPart2(group.strip()) for group in content.split('\n\n')]
 
 print("Part1: ",Part1())
 print("Part2: ",Part2())
