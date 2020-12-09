@@ -5,12 +5,12 @@ def Part1():
     valid = 0
 
     for passport in passports:
-        if (IsPassportValidPart1(passport)):
+        if (HasRequiredKeys(passport)):
             valid += 1
 
     return valid
 
-def IsPassportValidPart1(passport):
+def HasRequiredKeys(passport):
     required = ["byr","iyr","eyr","hgt","hcl","ecl","pid"]
     return all(item in passport.keys() for item in required)
 
@@ -21,7 +21,7 @@ def Part2():
     valid = 0
 
     for passport in passports:
-        if (IsPassportValidPart2(passport)):
+        if (IsPassportValid(passport)):
             valid += 1
 
     return valid
@@ -35,9 +35,8 @@ def Part2():
 # ecl (Eye Color)
 # pid (Passport ID)
 # cid (Country ID)
-def IsPassportValidPart2(passport):
-    required = ["byr","iyr","eyr","hgt","hcl","ecl","pid"]
-    if not all(item in passport.keys() for item in required):
+def IsPassportValid(passport):
+    if not HasRequiredKeys(passport):
         return False
 
     if not IsYearValid(passport["byr"], 1920, 2002):
