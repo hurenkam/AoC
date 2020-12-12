@@ -7,16 +7,17 @@ def Part1():
     heading = 90
     pos = [0,0]
 
-    handlers = { 
+    return ExecuteDirections( { 
         'L': TurnShip, 
         'R': TurnShip,
         'F': ForwardShip,
         'N': MoveShip,
         'E': MoveShip,
         'S': MoveShip,
-        'W': MoveShip
-    }
+        'W': MoveShip 
+    } )
 
+def ExecuteDirections(handlers):
     for command in directions:
         cmd = command[0]
         amount = int(command[1:])
@@ -35,8 +36,6 @@ def TurnShip(cmd,amount):
         heading -= 360
 
 def ForwardShip(cmd,amount):
-    global heading
-    global pos
     directions = { "N": [0,-1], "E": [1,0], "S": [0,1], "W": [-1,0] }
     headings = { 0:'N', 90: 'E', 180: 'S', 270: 'W' }
 
@@ -45,7 +44,6 @@ def ForwardShip(cmd,amount):
         pos[i] = pos[i] + delta[i] * amount
 
 def MoveShip(cmd,amount):
-    global pos
     directions = { "N": [0,-1], "E": [1,0], "S": [0,1], "W": [-1,0] }
     delta = directions[cmd]
     for i in range(0,2):
@@ -59,7 +57,7 @@ def Part2():
     pos = [0,0]
     wpt = [10,1]
     
-    handlers = { 
+    return ExecuteDirections( { 
         'L': RotateWaypoint, 
         'R': RotateWaypoint,
         'F': MoveShipToWaypoint,
@@ -67,33 +65,23 @@ def Part2():
         'E': MoveWaypoint,
         'S': MoveWaypoint,
         'W': MoveWaypoint
-    }
-
-    for command in directions:
-        cmd = command[0]
-        amount = int(command[1:])
-        handlers[cmd](cmd,amount)
-
-    return abs(pos[0]) + abs(pos[1])
+    } )
 
 def RotateWaypoint(cmd,amount):
     global wpt
     multiplier = { 'R': [1,-1], 'L': [-1,1] }
     tmp = int(amount / 90)
     for _ in range(0,tmp):
-        x=wpt[1] * multiplier[cmd][0]
-        y=wpt[0] * multiplier[cmd][1]
+        x = wpt[1] * multiplier[cmd][0]
+        y = wpt[0] * multiplier[cmd][1]
         wpt = [x,y]
 
 def MoveShipToWaypoint(cmd,amount):
-    global pos
-    global wpt
     for _ in range(0,amount):
         pos[0] += wpt[0]
         pos[1] += wpt[1]
 
 def MoveWaypoint(cmd,amount):
-    global wpt
     directions = { "N": [0,1], "E": [1,0], "S": [0,-1], "W": [-1,0] }
     delta = directions[cmd]
     for i in range(0,2):
