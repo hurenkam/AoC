@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+
+#===================================================================================
+def Part1():
+    nextgen = startmap.copy()
+    history = []
+    while True:
+        nextgen = CalculateNextGenPart1(nextgen)
+        h = CalculateHash(nextgen)
+        if (h in history):
+            return "".join(nextgen).count('#')
+
+        history.append(h)
+
+def CalculateHash(seatingmap):
+    s = ''.join(seatingmap)
+    return hash(s)
+
+def CalculateNextGenPart1(seatingmap):
+    result = []
+
+    y=0
+    for line in seatingmap:
+        x=0
+        newline=""
+        for char in line:
+            newline += CalculateNextPositionPart1(char,x,y,seatingmap)
+            x+=1
+        result.append(newline)
+        y+=1
+
+    return result
+
+# If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
+# If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
+# Otherwise, the seat's state does not change.
+def CalculateNextPositionPart1(c,x,y,seatingmap):
+    occupiedseatcount = CountOccupiedSeatsPart1(x,y,seatingmap)
+    if (c=='L') and (occupiedseatcount == 0):
+        return '#'
+    if (c=='#') and (occupiedseatcount >= 4):
+        return 'L'
+    return c
+
+def CountOccupiedSeatsPart1(x,y,seatingmap):
+    s=""
+    for dy in range(y-1,y+2):
+        if (dy>=0) and (dy<len(seatingmap)):
+            for dx in range(x-1,x+2):
+                if (dx>=0) and (dx<len(seatingmap[dy])):
+                    if not ((x==dx) and (y==dy)):
+                        s += seatingmap[dy][dx]
+
+    return s.count('#')
+
+
+#===================================================================================
+def Part2():
+    nextgen = startmap.copy()
+    history = []
+    while True:
+        nextgen = CalculateNextGenPart2(nextgen)
+        h = CalculateHash(nextgen)
+        if (h in history):
+            return "".join(nextgen).count('#')
+
+        history.append(h)
+
+def CalculateNextGenPart2(seatingmap):
+    result = []
+
+    y=0
+    for line in seatingmap:
+        x=0
+        newline=""
+        for char in line:
+            newline += CalculateNextPositionPart1(char,x,y,seatingmap)
+            x+=1
+        result.append(newline)
+        y+=1
+
+    return result
+
+def CalculateNextPositionPart2(c,x,y,seatingmap):
+    occupiedseatcount = CountOccupiedSeatsPart1(x,y,seatingmap)
+    if (c=='L') and (occupiedseatcount == 0):
+        return '#'
+    if (c=='#') and (occupiedseatcount >= 5):
+        return 'L'
+    return c
+
+def CountOccupiedSeatsPart2(x,y,seatingmap):
+    s=""
+    directions = [(-1,-1),(0,-1),(1,-1),(-1,0),(1,0),(-1,1),(0,1),(1,1)]
+    for dx,dy in directions:
+        s += FindSeatInDirection(x,y,dx,dy,seatingmap)
+    print("CountOccupiedSeatsPart2(",x,y,"):",s)
+    return s.count('#')
+
+def FindSeatInDirection(x,y,dx,dy,seatingmap):
+    if not IsPositionInRange(x+dx,y+dy):
+        return ""
+
+    c = seatingmap[y][x]
+    if c == '.':
+        return FindSeatInDirection(x+dx,y+dy,dx,dy,seatingmap)
+
+    return c
+
+def IsPositionInRange(x,y):
+    if ((x<0) or (x>=len(startmap[0])):
+        return False
+    if ((y<0) or (y>=len(startmap)):
+        return False
+    return True
+
+
+#===================================================================================
+print("Day 11")
+
+with open('input','r') as file:
+    startmap = [line.strip() for line in file]
+
+print("Part1: ",Part1())
+print("Part2: ",Part2())
