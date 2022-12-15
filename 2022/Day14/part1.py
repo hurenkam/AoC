@@ -46,7 +46,6 @@ def findCorners():
     bottom = s[len(s)-1][1]
 
 def dropSandParticle(pos=(500,0)):
-    global stop
     while (pos[1] < bottom):
 
         if (pos[0],pos[1]+1) not in scan:
