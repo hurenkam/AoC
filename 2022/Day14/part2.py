@@ -1,7 +1,6 @@
 #!/bin/env python
 
 with open('input.txt','r') as file:
-#with open('test.txt','r') as file:
     lines = [line.strip() for line in file]
 
 rocks = []
