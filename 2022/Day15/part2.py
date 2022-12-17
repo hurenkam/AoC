@@ -89,13 +89,13 @@ top = 0
 bottom = 4000000
 left = 0
 right = 4000000
-for i in range(0,bottom+1):
-    ranges = sorted(findRanges(i))
+for y in range(top,bottom+1):
+    ranges = sorted(findRanges(y))
     ranges = mergeRanges(ranges)
     ranges = narrowRanges(ranges,left,right)
     positions = countPositionsInRanges(ranges)
     if positions <= (right-left):
         x = findX(ranges,left,right)
-        result = x*4000000+i
+        result = x*4000000+y
         print(result)
         break
