@@ -78,6 +78,7 @@ fn sort_ranges(ranges: &mut Vec<Range<u64>>) {
 }
 
 fn optimize_ranges(ranges: &mut Vec<Range<u64>>) {
+    sort_ranges(ranges);
     let mut unmerged: Vec<Range<u64>> = vec![];
     loop {
         let last = match ranges.pop() {
@@ -116,7 +117,6 @@ fn solution_1(ranges: &Vec<Range<u64>>, ids: &Vec<u64>) -> u64 {
 }
 
 fn solution_2(ranges: &mut Vec<Range<u64>>) -> u64 {
-    sort_ranges(ranges);
     optimize_ranges(ranges);
     let mut result = 0;
     for range in ranges {
