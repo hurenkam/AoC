@@ -53,37 +53,33 @@ fn get_values_1(input: &Vec<String>) -> Vec<Vec<i64>> {
 }
 
 fn get_values_2(input: &Vec<String>) -> Vec<Vec<i64>> {
+
+    // collect all lines that hold values
+    // and store them in a Array2D instance
     let lines = input[..input.len()-1].iter();
     let rows = lines.map(|row| row.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
     let chars = Array2D::from_rows(&rows).unwrap();
 
-    // values are listed vertically, where values for
-    // different problems are separated by a column
-    // of spaces
+    // since values are to be read from top to bottom, let's convert the columns
+    // into strings, so they can easily be parsed.
+    let columns = chars.columns_iter().map(|column|{
+        let column: String = column.collect::<Vec<_>>().iter().map(|&c|*c).collect();
+        if let Some(s) = column.split_ascii_whitespace().next() { s.to_string() } else { "".to_string() }
+    }).collect::<Vec<_>>();
+
     let mut result = vec![];
     let mut record = vec![];
-    let mut columns = chars.columns_iter();
-    while let Some(column) = columns.next() {
-
-        // convert the vertical column to a string, and remove trailing whitespace
-        // so we can attempt to parse it
-        let column: String = column.collect::<Vec<_>>().iter().map(|&c|*c).collect();
-        if let Some(s) = column.split_ascii_whitespace().next() {
-
-            // the line should now hold a single integer value, so parse it
-            if let Ok(value) = s.parse::<i64>() {
-                record.push(value);
-            } else { panic!(); }
+    for column in columns {
+        // try to parse the column into an integer
+        if let Ok(value) = column.parse::<i64>() {
+            record.push(value);
         } else {
-
-            // nothing remains after stripping whitespace, so we must
-            // have hit an empty column, marking the end of a section
-            // let's push the record to result and start a new record
+            // parsing failed, so this must be an empty column, marking the end
+            // of a section let's push the record to result and start a new record
             result.push(record);
             record = vec![];
         }
     }
-
     // no more columns to process, but we still need to
     // push the final record to result.
     result.push(record);
