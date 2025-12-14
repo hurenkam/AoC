@@ -9,7 +9,7 @@ fn read_lines(filename: &str) -> Vec<String> {
     content
 }
 
-fn combine_actions_and_valuse(actions: Vec<char>, values: Vec<Vec<i64>>) -> Vec<(char,Vec<i64>)> {
+fn combine_actions_and_values(actions: Vec<char>, values: Vec<Vec<i64>>) -> Vec<(char, Vec<i64>)> {
     let mut result = vec![];
     for (i,column) in values.into_iter().enumerate() {
         let action = actions.get(i).unwrap();
@@ -44,7 +44,7 @@ fn get_values_1(input: &Vec<String>) -> Vec<Vec<i64>> {
     // operation.
     let values: Array2D<i64> = Array2D::from_rows(&rows).unwrap();
 
-    // we iterate over the columns, to convert the
+    // iterate over the columns, to convert the
     // array into a Vec<Vec<i64>> where the inner
     // vec's each contain the values for a single problem
     values.columns_iter().map(|column|
@@ -65,20 +65,19 @@ fn get_values_2(input: &Vec<String>) -> Vec<Vec<i64>> {
     let mut columns = chars.columns_iter();
     while let Some(column) = columns.next() {
 
-        // convert the vertical column to a string, so we can attempt to parse it
+        // convert the vertical column to a string, and remove trailing whitespace
+        // so we can attempt to parse it
         let column: String = column.collect::<Vec<_>>().iter().map(|&c|*c).collect();
-
-        // remove trailing whitespace
         if let Some(s) = column.split_ascii_whitespace().next() {
 
-            // and parse the result
+            // the line should now hold a single integer value, so parse it
             if let Ok(value) = s.parse::<i64>() {
                 record.push(value);
             } else { panic!(); }
         } else {
 
             // nothing remains after stripping whitespace, so we must
-            // have hit an empty column.
+            // have hit an empty column, marking the end of a section
             // let's push the record to result and start a new record
             result.push(record);
             record = vec![];
@@ -93,27 +92,23 @@ fn get_values_2(input: &Vec<String>) -> Vec<Vec<i64>> {
 }
 
 fn calculate_total(records: Vec<(char, Vec<i64>)>) -> i64 {
-    let mut total = 0;
-
-    let mut iter = records.clone().into_iter();
-    while let Some((action,values)) = iter.next() {
-        let result = match action {
+    // iterate over all the records, execute their associated
+    // action, and calculate the total of the results.
+    records.iter().map(|(action,values)| {
+        match action {
             '+' => values.into_iter().sum::<i64>(),
             '*' => values.into_iter().product::<i64>(),
             _ => panic!()
-        };
-        total += result;
-    }
-
-    total
+        }
+    }).collect::<Vec<_>>().iter().sum()
 }
 
 fn main() {
     let input = read_lines("./input.txt");
 
-    let records = combine_actions_and_valuse(get_actions(&input),get_values_1(&input));
+    let records = combine_actions_and_values(get_actions(&input), get_values_1(&input));
     println!("solution 1: {}",calculate_total(records)); // 6172481852142
 
-    let records = combine_actions_and_valuse(get_actions(&input),get_values_2(&input));
+    let records = combine_actions_and_values(get_actions(&input), get_values_2(&input));
     println!("solution 2: {}",calculate_total(records)); // 10188206723429
 }
