@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
@@ -11,17 +12,15 @@ fn read_lines(filename: &str) -> Vec<String> {
 }
 
 struct Manifold {
-    map: Array2D<char>
+    map: Array2D<char>,
+    cache: HashMap<(usize, usize), usize>
 }
 impl Manifold {
     fn new(lines: Vec<String>) -> Manifold {
         let rows = lines.iter().map(|row| row.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
         let map = Array2D::from_rows(&rows).unwrap();
-        Self { map }
-    }
-
-    fn dump(&self) {
-        self.map.rows_iter().for_each(|row| println!("{}", row.collect::<String>()));
+        let cache = HashMap::new();
+        Self { map, cache }
     }
 
     fn find_start_position(&self) -> (usize, usize) {
@@ -50,7 +49,7 @@ impl Manifold {
         result
     }
 
-    fn follow_tachyons(&self) -> usize {
+    fn count_tachyon_splits(&self) -> usize {
         let (mut y,x) = self.find_start_position();
         let mut beams = vec![x];
         let mut count = 0;
@@ -60,13 +59,39 @@ impl Manifold {
         }
         count
     }
+
+    fn count_realities(&mut self,from: (usize,usize)) -> usize {
+        if self.cache.keys().contains(&from) {
+            return *self.cache.get(&from).unwrap();
+        }
+
+        let mut result = 0;
+        let (mut y,x) = from;
+
+        while let Some(c) = self.map.get(y,x) {
+            if c != &'^' {
+                y += 1;
+            } else {
+                if x>0 {
+                    result += self.count_realities((y,x-1));
+                }
+                if x<self.map.row_len()-1 {
+                    result += self.count_realities((y,x+1));
+                }
+                self.cache.insert(from,result);
+                return result;
+            }
+        }
+
+        self.cache.insert(from,1);
+        1
+    }
 }
 
 fn main() {
     let input = read_lines("./input.txt");
-    let manifold = Manifold::new(input);
-    //manifold.dump();
+    let mut manifold = Manifold::new(input);
 
-    println!("solution 1: {}",manifold.follow_tachyons()); //
-    println!("solution 2: {}",0); //
+    println!("solution 1: {}",manifold.count_tachyon_splits()); // 1642
+    println!("solution 2: {}",manifold.count_realities(manifold.find_start_position())); // 47274292756692
 }
