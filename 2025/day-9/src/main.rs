@@ -62,6 +62,12 @@ fn calculate_part1(points: &Vec<Point>) -> usize {
     surfaces.get(keys.last().unwrap()).unwrap().clone()
 }
 
+fn calculate_polygon(points: &Vec<Point>) -> Vec<Point> {
+    let mut polygon: Vec<Point> = vec![];
+
+    polygon
+}
+
 fn calculate_part2(points: &Vec<Point>) -> usize {
     let polygon = calculate_polygon(&points);
 
