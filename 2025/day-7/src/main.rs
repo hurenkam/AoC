@@ -45,19 +45,18 @@ impl Manifold {
             }
         };
 
+        // make sure there are no duplicates in the collection
         *beams = new_beams.iter().unique().map(|&i|i).collect::<Vec<_>>();
         result
     }
 
     fn count_tachyon_splits(&self) -> usize {
-        let (mut y,x) = self.find_start_position();
+        let (y,x) = self.find_start_position();
         let mut beams = vec![x];
-        let mut count = 0;
-        while y < self.map.column_len()-1 {
-            y+=1;
-            count += self.propagate_beams(y,&mut beams);
-        }
-        count
+
+        (y..self.map.column_len()-1).enumerate().map(|(y,_)|
+            self.propagate_beams(y+1,&mut beams)
+        ).collect::<Vec<_>>().iter().sum::<usize>()
     }
 
     fn count_realities(&mut self,from: (usize,usize)) -> usize {
