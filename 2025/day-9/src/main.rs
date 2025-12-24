@@ -56,22 +56,133 @@ fn get_keys_sorted_by_surface(surface: &HashMap<(Point, Point),usize>) -> Vec<(P
     keys
 }
 
-fn calculate_part1(points: &Vec<Point>) -> usize {
-    let surfaces = calculate_surfaces(&points);
-    let keys = get_keys_sorted_by_surface(&surfaces);
+fn calculate_part1(surfaces: &HashMap::<(Point,Point),usize>, keys: &Vec<(Point,Point)>) -> usize {
     surfaces.get(keys.last().unwrap()).unwrap().clone()
 }
 
+fn find_rows_and_columns(points: &Vec<Point>) -> (Vec<i64>,Vec<i64>) {
+    let mut rows: Vec<i64> = vec![];
+    let mut columns: Vec<i64> = vec![];
+
+    for point in points {
+        rows.push(point.0);
+        columns.push(point.1);
+    }
+    rows = rows.into_iter().unique().sorted().collect_vec();
+    columns = columns.into_iter().unique().sorted().collect_vec();
+    //println!("{}, {:?}", rows.len(), rows);
+    //println!("{}, {:?}", columns.len(), columns);
+
+    (rows,columns)
+}
+
+fn find_neighbors(point: &Point, points: &Vec<Point>) -> Vec<Point> {
+    let mut result: Vec<Point> = vec![];
+
+    result
+}
+
 fn calculate_polygon(points: &Vec<Point>) -> Vec<Point> {
+    let (rows, columns) = find_rows_and_columns(points);
+    let mut columns_by_row : HashMap<i64,Vec<i64>> = HashMap::new();
+    for row in rows {
+        let mut columns = vec![];
+        for point in points {
+            if (point.0 == row) { columns.push(point.1); }
+        }
+        println!("row: {}, columns: {:?}", row, columns);
+        columns_by_row.insert(row, columns);
+    }
+
+    let mut rows_by_column : HashMap<i64,Vec<i64>> = HashMap::new();
+    for column in columns {
+        let mut rows = vec![];
+        for point in points {
+            if (point.1 == column) { rows.push(point.0); }
+        }
+        println!("column: {}, rows: {:?}", column, rows);
+        rows_by_column.insert(column, rows);
+    }
+
     let mut polygon: Vec<Point> = vec![];
+
+    /*
+    let mut points = points.clone();
+    for point in &points {
+        println!("point: {:?}, neighbors: {:?}",*point, find_neighbors(*point, &points));
+    }
+    */
 
     polygon
 }
 
-fn calculate_part2(points: &Vec<Point>) -> usize {
-    let polygon = calculate_polygon(&points);
+fn find_horizontal_and_vertical_lines(points: &Vec<Point>) -> (Vec<(Point, Point)>, Vec<(Point, Point)>) {
+    let mut horizontal: Vec<(Point,Point)> = vec![];
+    let mut vertical: Vec<(Point,Point)> = vec![];
 
-    0
+    todo!();
+
+    (horizontal, vertical)
+}
+
+fn do_lines_intersect(horizontal: &(Point,Point), vertical: &(Point,Point)) -> bool {
+    let ((hl,hy),(hr,_)) = horizontal;
+    let ((vx,ty),(_,by)) = vertical;
+
+    // is vertical line left or right of horizontal line?
+    if vx <= hl || vx >= hr { return false }
+
+    // is horizontal line above or below vertical line?
+    if hy <= ty || hy >= by { return false }
+
+    // if not, then they must intersect
+    true
+}
+
+fn does_rectangle_intersect(key: &(Point,Point), horizontal: &Vec<(Point, Point)>, vertical: &Vec<(Point, Point)>) -> bool {
+    let (from,to) = key;
+    let lx = min(from.0,to.0);
+    let rx = max (from.0,to.0);
+    let ty = min(from.1,to.1);
+    let by = max(from.1,to.1);
+    let top = ((lx,ty),(rx,ty));
+    let bottom = ((lx,by),(rx,by));
+    let left = ((lx,ty),(lx,by));
+    let right = ((rx,ty),(rx,by));
+
+    // - check if the rectangles vertical lines cross any of the polygon horizontal lines
+    for h in horizontal {
+        if do_lines_intersect(h,&left) { return true }
+        if do_lines_intersect(h,&right) { return true }
+    }
+
+    // - check if the rectangles horizontal lines cross any of the polygon vertical lines
+    for v in vertical {
+        if do_lines_intersect(&top,v) { return true }
+        if do_lines_intersect(&bottom,v) { return true }
+    }
+
+    false
+}
+
+fn calculate_part2(points: &Vec<Point>, surfaces: &HashMap::<(Point,Point),usize>, keys: &Vec<(Point,Point)>) -> usize {
+
+    // algorithm:
+    // ----------
+    // determine horizontal and vertical lines of the polygon
+    // iterate over the rectangles from part1, starting from the bottom of the list:
+    // - check if the horizontal lines cross any of the polygon vertical lines
+    // - check if the vertical lines cross any of the polygon horizontal lines
+    // repeat until a candidate is found that does not intersect,
+    // since the keys are sorted, this must be the largest possible rectangle.
+
+    let (horizontal,vertical) = find_horizontal_and_vertical_lines(&points);
+    let mut index = keys.len()-1;
+    while does_rectangle_intersect(keys.get(index).unwrap(),&horizontal,&vertical) {
+        index -= 1;
+    }
+
+    surfaces.get(keys.get(index).unwrap()).unwrap().clone()
 }
 
 fn main() {
@@ -80,6 +191,8 @@ fn main() {
     sort_points(&mut points);
     //println!("{:?}",points);
 
-    println!("solution 1: {}",calculate_part1(&points)); // 4758598740
-    println!("solution 2: {}",calculate_part2(&points)); //
+    let surfaces = calculate_surfaces(&points);
+    let keys = get_keys_sorted_by_surface(&surfaces);
+    println!("solution 1: {}",calculate_part1(&surfaces,&keys)); // 4758598740
+    println!("solution 2: {}",calculate_part2(&points,&surfaces,&keys)); //
 }
